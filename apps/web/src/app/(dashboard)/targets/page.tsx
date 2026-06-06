@@ -1,3 +1,4 @@
+import Link from 'next/link';
 import { eq } from 'drizzle-orm';
 import { requireOrg } from '@/lib/context';
 import { db, targets } from '@argus/db';
@@ -62,7 +63,12 @@ export default async function TargetsPage() {
               <Card key={target.id}>
                 <CardContent className="flex flex-col gap-3 p-4 sm:flex-row sm:items-center sm:justify-between">
                   <div className="flex flex-col gap-1">
-                    <span className="font-medium text-zinc-100">{target.value}</span>
+                    <Link
+                      href={`/targets/${target.id}`}
+                      className="font-medium text-zinc-100 hover:text-emerald-400"
+                    >
+                      {target.value}
+                    </Link>
                     <div className="flex flex-wrap items-center gap-2">
                       <Badge tone="neutral">{target.type}</Badge>
                       <Badge tone={verificationTone[target.verification]}>
