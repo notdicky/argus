@@ -1,4 +1,4 @@
-import { and, eq } from 'drizzle-orm';
+import { and, count, eq } from 'drizzle-orm';
 import { db, scanRuns, assets, snapshots, findings, targets } from '@argus/db';
 import type { ScanJob, Severity } from '@argus/core';
 import { discoverSubdomains, resolveHosts } from './stages/subdomain';
@@ -65,6 +65,8 @@ export async function runScan(job: ScanJob) {
     .where(eq(scanRuns.id, job.scanRunId));
 
   try {
+    await db.delete(findings).where(eq(findings.targetId, job.targetId));
+
     const candidates = await discoverSubdomains(job.target);
     const resolved = await resolveHosts(candidates);
     const live = resolved.filter((entry) => entry.addresses.length > 0);
@@ -152,6 +154,12 @@ export async function runScan(job: ScanJob) {
     }
 
     const openPorts = hostPorts.reduce((total, entry) => total + entry.ports.length, 0);
+    const findingRows = await db
+      .select({ value: count() })
+      .from(findings)
+      .where(eq(findings.scanRunId, job.scanRunId));
+    const findingsWritten = findingRows[0]?.value ?? 0;
+
     await db
       .update(scanRuns)
       .set({
@@ -162,13 +170,13 @@ export async function runScan(job: ScanJob) {
           live: live.length,
           ports: openPorts,
           urls: urls.length,
-          findings: vulns.length,
+          findings: findingsWritten,
           changes: changeCount,
         },
       })
       .where(eq(scanRuns.id, job.scanRunId));
 
-    return { live: live.length, ports: openPorts, urls: urls.length, findings: vulns.length };
+    return { live: live.length, ports: openPorts, urls: urls.length, findings: findingsWritten };
   } catch (error) {
     await db
       .update(scanRuns)
