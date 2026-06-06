@@ -10,6 +10,8 @@ dist
 *.tsbuildinfo
 .env
 .env.*
+**/.env
+**/.env.*
 infra/private
 infra/docker-compose.prod.yml
 data

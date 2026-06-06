@@ -35,8 +35,11 @@ against it.
 subfinder -> dnsx -> naabu -> httpx -> tls/header checks -> nuclei -> store + diff
 ```
 
-If those tools aren't installed the worker falls back to a built-in DNS resolver, so it
-still does something useful when you're just hacking on it locally.
+If those tools aren't installed the worker falls back to built-in Node implementations
+(DNS resolution, TCP port checks, fetch-based HTTP probing, a TLS inspector, and header
+grading), so a scan still produces real results. The default worker image
+(`infra/Dockerfile.worker`) is node-only; build `infra/Dockerfile.worker.tools` to bake in
+the ProjectDiscovery tools for fuller recon.
 
 ## Stack
 
