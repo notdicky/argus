@@ -1,0 +1,32 @@
+{
+  "name": "argus",
+  "private": true,
+  "version": "0.1.0",
+  "packageManager": "pnpm@10.12.1",
+  "engines": {
+    "node": ">=20"
+  },
+  "scripts": {
+    "dev": "turbo run dev",
+    "build": "turbo run build",
+    "lint": "turbo run lint",
+    "typecheck": "turbo run typecheck",
+    "format": "prettier --write \"**/*.{ts,tsx,md,json}\"",
+    "db:generate": "pnpm -F @argus/db db:generate",
+    "db:migrate": "pnpm -F @argus/db db:migrate",
+    "db:push": "pnpm -F @argus/db db:push",
+    "db:studio": "pnpm -F @argus/db db:studio"
+  },
+  "devDependencies": {
+    "@types/node": "^22.10.5",
+    "prettier": "^3.4.2",
+    "turbo": "^2.3.4",
+    "typescript": "^5.7.3"
+  },
+  "pnpm": {
+    "overrides": {
+      "ioredis": "5.11.1"
+    },
+    "onlyBuiltDependencies": ["esbuild", "sharp"]
+  }
+}

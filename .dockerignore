@@ -1,0 +1,15 @@
+.git
+node_modules
+**/node_modules
+.next
+**/.next
+.turbo
+**/.turbo
+dist
+**/dist
+*.tsbuildinfo
+.env
+.env.*
+infra/private
+infra/docker-compose.prod.yml
+data

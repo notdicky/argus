@@ -1,0 +1,16 @@
+FROM golang:1.23-alpine AS tools
+RUN apk add --no-cache git
+RUN go install github.com/projectdiscovery/subfinder/v2/cmd/subfinder@latest \
+  && go install github.com/projectdiscovery/dnsx/cmd/dnsx@latest \
+  && go install github.com/projectdiscovery/httpx/cmd/httpx@latest \
+  && go install github.com/projectdiscovery/nuclei/v3/cmd/nuclei@latest
+
+FROM node:24-alpine AS run
+ENV PNPM_HOME=/pnpm
+ENV PATH=$PNPM_HOME:$PATH
+RUN corepack enable
+WORKDIR /app
+COPY --from=tools /go/bin/ /usr/local/bin/
+COPY . .
+RUN pnpm install --frozen-lockfile
+CMD ["pnpm", "-F", "worker", "start"]
