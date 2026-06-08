@@ -38,6 +38,26 @@ export async function createTargetAction(
   return { success: true };
 }
 
+export async function toggleMonitoringAction(formData: FormData): Promise<void> {
+  const { org } = await requireOrg();
+
+  const targetId = String(formData.get('targetId') ?? '');
+  const target = await db.query.targets.findFirst({
+    where: and(eq(targets.id, targetId), eq(targets.organizationId, org.id)),
+  });
+  if (!target) {
+    return;
+  }
+
+  await db
+    .update(targets)
+    .set({ monitoringEnabled: !target.monitoringEnabled })
+    .where(eq(targets.id, target.id));
+
+  revalidatePath('/targets');
+  revalidatePath(`/targets/${target.id}`);
+}
+
 export async function startScanAction(formData: FormData): Promise<void> {
   const { org } = await requireOrg();
 

@@ -180,7 +180,7 @@ proxy. Database and Redis ports are not published in the production template.
 - [x] **M0** — monorepo foundation, auth, targets, job queue, worker, first scan stage
 - [x] **M1** — full pipeline (ports, HTTP, TLS, headers, optional nuclei) and snapshot
   diffing with alerts
-- [ ] **M2** — scheduled re-scans and a change feed
+- [x] **M2** — scheduled re-scans, monitoring toggle, and a change feed (alerts + diffs)
 - [ ] **M3** — alert channels (email / webhook / chat) and alert rules
 - [ ] **M4** — organizations, RBAC, and ownership verification
 

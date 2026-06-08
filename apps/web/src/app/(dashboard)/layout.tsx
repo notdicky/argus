@@ -7,6 +7,7 @@ import { Button } from '@/components/ui/button';
 const navItems = [
   { href: '/dashboard', label: 'Overview' },
   { href: '/targets', label: 'Targets' },
+  { href: '/activity', label: 'Activity' },
 ];
 
 export default async function DashboardLayout({ children }: { children: ReactNode }) {

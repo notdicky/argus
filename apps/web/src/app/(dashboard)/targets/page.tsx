@@ -6,7 +6,7 @@ import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { CreateTargetForm } from './create-target-form';
-import { startScanAction } from './actions';
+import { startScanAction, toggleMonitoringAction } from './actions';
 
 const verificationTone = {
   pending: 'medium',
@@ -79,6 +79,7 @@ export default async function TargetsPage() {
                       ) : (
                         <Badge tone="neutral">no scans</Badge>
                       )}
+                      {target.monitoringEnabled ? <Badge tone="success">monitoring</Badge> : null}
                     </div>
                     {target.verification === 'pending' ? (
                       <span className="text-xs text-zinc-500">
@@ -89,12 +90,20 @@ export default async function TargetsPage() {
                       </span>
                     ) : null}
                   </div>
-                  <form action={startScanAction}>
-                    <input type="hidden" name="targetId" value={target.id} />
-                    <Button type="submit" size="sm" variant="outline">
-                      Run scan
-                    </Button>
-                  </form>
+                  <div className="flex items-center gap-2">
+                    <form action={toggleMonitoringAction}>
+                      <input type="hidden" name="targetId" value={target.id} />
+                      <Button type="submit" size="sm" variant="ghost">
+                        {target.monitoringEnabled ? 'Stop monitoring' : 'Monitor'}
+                      </Button>
+                    </form>
+                    <form action={startScanAction}>
+                      <input type="hidden" name="targetId" value={target.id} />
+                      <Button type="submit" size="sm" variant="outline">
+                        Run scan
+                      </Button>
+                    </form>
+                  </div>
                 </CardContent>
               </Card>
             );

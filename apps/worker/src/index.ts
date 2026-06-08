@@ -3,6 +3,7 @@ import { config } from 'dotenv';
 import { Worker } from 'bullmq';
 import { SCAN_QUEUE, createRedisConnection, scanJobSchema } from '@argus/core';
 import { runScan } from './pipeline';
+import { scheduleDueScans } from './scheduler';
 
 config({ path: resolve(process.cwd(), '../../.env') });
 
@@ -27,7 +28,19 @@ worker.on('failed', (job, error) => {
 
 console.log(`[argus] worker listening on "${SCAN_QUEUE}" with concurrency ${concurrency}`);
 
+const schedulerTick = async () => {
+  try {
+    await scheduleDueScans();
+  } catch (error) {
+    console.error(`[argus] scheduler error: ${error instanceof Error ? error.message : error}`);
+  }
+};
+
+const scheduler = setInterval(schedulerTick, 60_000);
+void schedulerTick();
+
 async function shutdown() {
+  clearInterval(scheduler);
   await worker.close();
   process.exit(0);
 }

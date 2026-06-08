@@ -6,7 +6,7 @@ import { db, targets, assets, findings, scanRuns } from '@argus/db';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { startScanAction } from '../actions';
+import { startScanAction, toggleMonitoringAction } from '../actions';
 
 const severityTone = {
   info: 'info',
@@ -60,14 +60,25 @@ export default async function TargetDetailPage({ params }: { params: Promise<{ i
           <Link href="/targets" className="text-xs text-zinc-500 hover:underline">
             ← Targets
           </Link>
-          <h1 className="text-xl font-semibold text-zinc-100">{target.value}</h1>
+          <div className="flex items-center gap-2">
+            <h1 className="text-xl font-semibold text-zinc-100">{target.value}</h1>
+            {target.monitoringEnabled ? <Badge tone="success">monitoring</Badge> : null}
+          </div>
         </div>
-        <form action={startScanAction}>
-          <input type="hidden" name="targetId" value={target.id} />
-          <Button type="submit" size="sm">
-            Run scan
-          </Button>
-        </form>
+        <div className="flex items-center gap-2">
+          <form action={toggleMonitoringAction}>
+            <input type="hidden" name="targetId" value={target.id} />
+            <Button type="submit" size="sm" variant="ghost">
+              {target.monitoringEnabled ? 'Stop monitoring' : 'Monitor'}
+            </Button>
+          </form>
+          <form action={startScanAction}>
+            <input type="hidden" name="targetId" value={target.id} />
+            <Button type="submit" size="sm">
+              Run scan
+            </Button>
+          </form>
+        </div>
       </div>
 
       <Card>
